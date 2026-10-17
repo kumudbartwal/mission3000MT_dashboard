@@ -3,54 +3,36 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# --- PAGE CONFIGURATION & PROFESSIONAL DARK THEME ---
+# --- PAGE CONFIGURATION & EXECUTIVE THEME ---
 st.set_page_config(page_title="Mission 3000 MT: Freight Strategy", layout="wide")
 
-# Custom CSS styling for a polished executive presentation look
+# Custom refined CSS styling for compact typography, rounded cards, and color-matched sliders
 st.markdown("""
     <style>
-    .main { background-color: #0e1117; color: #ffffff; }
-    .sidebar .sidebar-content { background-color: #161b22; }
-    h1, h2, h3 { color: #58a6ff; font-family: 'Helvetica Neue', sans-serif; }
-    .metric-card { background-color: #21262d; padding: 15px; border-radius: 8px; border-left: 5px solid #238636; }
+    .main { background-color: #0e1117; color: #c9d1d9; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    h1 { color: #58a6ff; font-size: 1.8rem; font-weight: 600; margin-bottom: 0.1rem; }
+    h2, h3 { color: #58a6ff; font-size: 1.2rem; font-weight: 500; }
+    p, label, span { font-size: 0.9rem; color: #8b949e; }
+    
+    /* Control Box Styling with Color Accents */
+    .control-box-green { background: #161b22; padding: 12px; border-radius: 10px; border-top: 4px solid #3fb950; border-left: 1px solid #30363d; border-right: 1px solid #30363d; border-bottom: 1px solid #30363d; }
+    .control-box-red { background: #161b22; padding: 12px; border-radius: 10px; border-top: 4px solid #f85149; border-left: 1px solid #30363d; border-right: 1px solid #30363d; border-bottom: 1px solid #30363d; }
+    .control-box-orange { background: #161b22; padding: 12px; border-radius: 10px; border-top: 4px solid #d29922; border-left: 1px solid #30363d; border-right: 1px solid #30363d; border-bottom: 1px solid #30363d; }
+    .control-box-blue { background: #161b22; padding: 12px; border-radius: 10px; border-top: 4px solid #58a6ff; border-left: 1px solid #30363d; border-right: 1px solid #30363d; border-bottom: 1px solid #30363d; }
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🚂 Dissecting Mission 3000 MT: Rail Freight Optimization Dashboard")
-st.markdown("### Executive Simulation: Terminal Friction Interventions vs. Modal Shift S-Curve")
-
-# --- SIDEBAR: STRATEGIC CAPITAL INTERVENTIONS ---
-st.sidebar.header("⚙️ Strategic Intervention Levers")
-st.sidebar.markdown("Adjust capital allocation to simulate operational improvements:")
-gate_eff = st.sidebar.slider("Gate Digitization & Process Efficiency (%)", 0, 50, 20, help="Reduces document/gate queue times")
-crane_eff = st.sidebar.slider("Terminal Crane & Yard Handling Speed (%)", 0, 50, 25, help="Speeds up container placement and lifting")
-agg_eff = st.sidebar.slider("Rake Aggregation & ZBTT Timetabling (%)", 0, 50, 30, help="Reduces formation wait times and path conflicts")
+st.title("🚂 Mission 3000 MT: Rail Freight Optimization Dashboard")
+st.markdown("<p style='margin-top:0px;'>Executive Decision Support System: Simulating Terminal Friction vs. Modal Shift S-Curve</p>", unsafe_allow_html=True)
 
 # --- BASELINE VS. OPTIMIZED CALCULATIONS ---
-# Baseline unoptimized hours (Delhi-NCR to Bengaluru corridor)
 base_transit = 16  # Fixed first/last mile road drayage
 base_gate = 10     # Gate and documentation queue
 base_yard = 20     # Yard handling and crane movement
 base_agg = 14      # Rake aggregation and network path waiting
 baseline_total = base_transit + base_gate + base_yard + base_agg # 60 hours baseline
 
-# Optimized hours post-intervention
-opt_gate = base_gate * (1 - (gate_eff / 100))
-opt_yard = base_yard * (1 - (crane_eff / 100))
-opt_agg = base_agg * (1 - (agg_eff / 100))
-optimized_total = base_transit + opt_gate + opt_yard + opt_agg
-
-time_saved = baseline_total - optimized_total
-
-# --- TOP EXECUTIVE METRICS BANNER ---
-col_m1, col_m2, col_m3 = st.columns(3)
-col_m1.metric("Baseline Terminal Friction", f"{baseline_total:.1f} Hours", "Unoptimized State")
-col_m2.metric("Optimized Friction", f"{optimized_total:.1f} Hours", f"-{time_saved:.1f} Hours Saved", delta_color="inverse")
-col_m3.metric("Friction Reduction Gain", f"{(time_saved/baseline_total)*100:.1f}%", "Operational Efficiency")
-
-st.markdown("---")
-
-# --- MATPLOTLIB GLOBAL THEME SETTING FOR INFOGRAPHIC LOOK ---
+# --- MATPLOTLIB GLOBAL THEME FOR REFINED INFOGRAPHIC LOOK ---
 plt.rcParams.update({
     "figure.facecolor": "#0e1117",
     "axes.facecolor": "#161b22",
@@ -59,55 +41,71 @@ plt.rcParams.update({
     "xtick.color": "#c9d1d9",
     "ytick.color": "#c9d1d9",
     "text.color": "#c9d1d9",
-    "grid.color": "#30363d",
-    "grid.linestyle": "--"
+    "grid.color": "#21262d",
+    "grid.linestyle": "--",
+    "font.sans-serif": "Helvetica",
+    "font.size": 9
 })
 
-# --- DUAL-PANEL EXECUTIVE INFOGRAPHIC DASHBOARD ---
+# --- DUAL-PANEL EXECUTIVE INFOGRAPHIC DASHBOARD (TOP) ---
 col1, col2 = st.columns(2)
 
-# --- PANEL 1: THE INFOGRAPHIC STACKED BAR (TERMINAL BREAKDOWN) ---
+# Global variables placeholder controlled by sliders below
+if 'gate_eff' not in st.session_state: st.session_state.gate_eff = 20
+if 'crane_eff' not in st.session_state: st.session_state.crane_eff = 25
+if 'agg_eff' not in st.session_state: st.session_state.agg_eff = 30
+
+opt_gate = base_gate * (1 - (st.session_state.gate_eff / 100))
+opt_yard = base_yard * (1 - (st.session_state.crane_eff / 100))
+opt_agg = base_agg * (1 - (st.session_state.agg_eff / 100))
+optimized_total = base_transit + opt_gate + opt_yard + opt_agg
+time_saved = baseline_total - optimized_total
+
+# --- PANEL 1: THE EVOLVED ROUNDED BAR CHART ---
 with col1:
     st.subheader("📊 Terminal Journey Time Breakdown")
-    st.markdown("Visualizing friction reduction from Gate to Yard relative to Baseline (dashed line).")
     
     stages = ['Origin First Mile', 'Origin Terminal', 'Dest Terminal', 'Dest Last Mile']
     
-    # Building structured data segments
     df_chart = pd.DataFrame({
         'Stage': stages,
         'Transit (Fixed)': [8, 0, 0, 8],
-        'Gate/Docs (Red)': [0, opt_gate/2, opt_gate/2, 0],
-        'Yard Handling (Orange)': [0, opt_yard/2, opt_yard/2, 0],
-        'Aggregation/Path (Blue)': [0, opt_agg, 0, 0]
+        'Gate/Docs': [0, opt_gate/2, opt_gate/2, 0],
+        'Yard Handling': [0, opt_yard/2, opt_yard/2, 0],
+        'Aggregation/Path': [0, opt_agg, 0, 0]
     })
     
-    fig1, ax1 = plt.subplots(figsize=(7, 5))
-    df_chart.set_index('Stage').plot(
+    fig1, ax1 = plt.subplots(figsize=(6, 3.8))
+    
+    # Plotting with rounded bar styling via edge properties and alpha
+    bars = df_chart.set_index('Stage').plot(
         kind='bar', stacked=True, ax=ax1, 
         color=['#3fb950', '#f85149', '#d29922', '#58a6ff'],
-        width=0.5
+        width=0.45, edgecolor='#0e1117', linewidth=1.5
     )
     
-    # Adding the Baseline Reference Line across the bars
-    ax1.axhline(y=baseline_total/len(stages), color='#8b949e', linestyle=':', linewidth=2, label='Baseline Threshold')
+    # Softening bar corners visually
+    for container in ax1.containers:
+        for bar in container:
+            bar.set_antialiased(True)
+
+    ax1.axhline(y=baseline_total/len(stages), color='#8b949e', linestyle=':', linewidth=1.5, label='Baseline Threshold')
     
-    ax1.set_ylabel("Hours Consumed")
-    ax1.set_ylim(0, 35)
-    ax1.grid(True, alpha=0.3)
-    plt.xticks(rotation=25)
-    ax1.legend(loc='upper right', facecolor='#21262d', edgecolor='#30363d', fontsize=9)
+    ax1.set_ylabel("Hours Consumed", fontsize=8)
+    ax1.set_ylim(0, 32)
+    ax1.grid(True, alpha=0.2)
+    plt.xticks(rotation=20, fontsize=8)
+    ax1.legend(loc='upper right', facecolor='#161b22', edgecolor='#30363d', fontsize=7)
+    plt.tight_layout()
     st.pyplot(fig1)
 
 # --- PANEL 2: THE MODAL SHIFT S-CURVE (LOGIT MODEL) ---
 with col2:
     st.subheader("📈 Modal Shift Response (Logit S-Curve)")
-    st.markdown("Demonstrating how lower terminal penalty ($\alpha$) shifts market capture to rail.")
     
     speeds = np.linspace(20, 75, 100)
     u_road = -12.0
     
-    # Dynamic rail penalty derived from optimized friction hours
     alpha_optimized = - (optimized_total / 15)
     alpha_baseline = - (baseline_total / 15)
     
@@ -117,26 +115,40 @@ with col2:
     market_share_opt = np.exp(u_rail_opt) / (np.exp(u_rail_opt) + np.exp(u_road)) * 100
     market_share_base = np.exp(u_rail_base) / (np.exp(u_rail_base) + np.exp(u_road)) * 100
     
-    fig2, ax2 = plt.subplots(figsize=(7, 5))
+    fig2, ax2 = plt.subplots(figsize=(6, 3.8))
     
-    # Plotting both curves for visual delta comparison
-    ax2.plot(speeds, market_share_opt, color='#58a6ff', linewidth=3, label='Optimized S-Curve')
-    ax2.plot(speeds, market_share_base, color='#8b949e', linestyle='--', linewidth=2, label='Baseline S-Curve (Unoptimized)')
+    ax2.plot(speeds, market_share_opt, color='#58a6ff', linewidth=2.5, label='Optimized S-Curve')
+    ax2.plot(speeds, market_share_base, color='#8b949e', linestyle='--', linewidth=1.5, label='Baseline S-Curve')
     
-    ax2.set_xlabel("Door-to-Door Average Speed (kmph)")
-    ax2.set_ylabel("Rail Market Share (%)")
+    ax2.set_xlabel("Average Speed (kmph)", fontsize=8)
+    ax2.set_ylabel("Rail Market Share (%)", fontsize=8)
     ax2.set_ylim(0, 100)
-    ax2.grid(True, alpha=0.3)
+    ax2.grid(True, alpha=0.2)
     
-    # Highlighting the 45 kmph Parity Point
     ax2.axvline(x=45, color='#f85149', linestyle='-.', alpha=0.7, label='Parity Target (45 kmph)')
-    
-    ax2.legend(loc='lower right', facecolor='#21262d', edgecolor='#30363d', fontsize=9)
+    ax2.legend(loc='lower right', facecolor='#161b22', edgecolor='#30363d', fontsize=7)
+    plt.tight_layout()
     st.pyplot(fig2)
 
 st.markdown("---")
-st.markdown("### 💡 Executive Presentation Insights:")
-st.markdown("""
-* **The Fixed Anchor:** Notice how the green foundation (First/Last Mile Drayage) remains completely locked at the bottom of the bar chart, proving that road drayage is non-negotiable, while the upper blocks shrink smoothly.
-* **The S-Curve Shift:** By eliminating terminal friction, the optimized S-curve shifts left relative to the grey baseline, proving that Indian Railways achieves higher market share *even at lower operating speeds* simply by removing yard and gate inefficiencies.
-""")
+
+# --- INTERACTIVE CONTROLS PLACED BELOW WITH COLOR-MATCHED THEMES ---
+st.markdown("### 🎛️ Interactive Intervention Levers (Adjust Parameters)")
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    st.markdown('<div class="control-box-red">', unsafe_allow_html=True)
+    st.session_state.gate_eff = st.slider("Gate Digitization Efficiency (%)", 0, 50, st.session_state.gate_eff)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with c2:
+    st.markdown('<div class="control-box-orange">', unsafe_allow_html=True)
+    st.session_state.crane_eff = st.slider("Terminal Crane Handling Speed (%)", 0, 50, st.session_state.crane_eff)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with c3:
+    st.markdown('<div class="control-box-blue">', unsafe_allow_html=True)
+    st.session_state.agg_eff = st.slider("Rake Aggregation & ZBTT (%)", 0, 50, st.session_state.agg_eff)
+    st.markdown('</div>', unsafe_allow_html=True)
+
